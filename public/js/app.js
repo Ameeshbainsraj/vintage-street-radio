@@ -1,50 +1,59 @@
 const $ = id => document.getElementById(id);
 
-// ── YouTube Player ──
-let ytPlayer = null;
-let audioReady = false;
+// ── Audio Stream Player ──
+// Free lofi radio streams — tries each one until one works
+const STREAMS = [
+  'https://streams.ilovemusic.de/iloveradio17.mp3',   // lofi hip hop
+  'https://streaming.radio.co/s3f40c7742/listen',      // chill
+  'https://stream.zeno.fm/yn65m4vvp8zuv',              // lofi hip hop radio
+];
+let streamIndex = 0;
 let audioPlaying = false;
+const audio = $('audioStream');
 
-window.onYouTubeIframeAPIReady = function() {
-  ytPlayer = new YT.Player('yt-player', {
-    height: '1', width: '1',
-    videoId: 'WdJg27tKQLY',
-    playerVars: {
-      listType: 'playlist',
-      list: 'RDWdJg27tKQLY',
-      autoplay: 0,
-      loop: 1,
-      controls: 0,
-      fs: 0,
-      rel: 0
-    },
-    events: {
-      onReady: () => { audioReady = true; ytPlayer.setVolume(70); },
-      onStateChange: e => {
-        if (e.data === YT.PlayerState.ENDED) ytPlayer.playVideo();
-      }
-    }
+audio.volume = 0.7;
+
+audio.addEventListener('error', () => {
+  console.log('Stream failed, trying next...');
+  streamIndex = (streamIndex + 1) % STREAMS.length;
+  if (audioPlaying) loadAndPlay();
+});
+
+audio.addEventListener('stalled', () => {
+  if (audioPlaying) { audio.load(); audio.play(); }
+});
+
+function loadAndPlay() {
+  audio.src = STREAMS[streamIndex];
+  audio.load();
+  audio.play().catch(() => {
+    streamIndex = (streamIndex + 1) % STREAMS.length;
+    if (streamIndex < STREAMS.length) loadAndPlay();
   });
-};
+}
 
 function toggleAudio() {
-  if (!audioReady) return;
   const btn = $('audioBtn');
   if (!audioPlaying) {
-    ytPlayer.playVideo();
+    loadAndPlay();
     audioPlaying = true;
     btn.textContent = '⏸ PAUSE';
     btn.classList.add('playing');
+    setWaveform(true);
+    setVinyl(true);
   } else {
-    ytPlayer.pauseVideo();
+    audio.pause();
+    audio.src = '';
     audioPlaying = false;
     btn.textContent = '▶ PLAY';
     btn.classList.remove('playing');
+    setWaveform(false);
+    setVinyl(false);
   }
 }
 
 function setVolume(val) {
-  if (ytPlayer && audioReady) ytPlayer.setVolume(parseInt(val));
+  audio.volume = parseInt(val) / 100;
 }
 
 let trackHistory = [];

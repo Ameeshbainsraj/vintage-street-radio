@@ -89,8 +89,8 @@ Return ONLY valid JSON (no markdown, no explanation):
         send('track_ready', { trackName: 'Unknown', artist: 'VSR', duration: '3:30', bpm: 75, tags: [], djLine: raw, nowPlaying: 'city at night' });
       }
 
-      // hold the track for 12 seconds before next one
-      await new Promise(r => setTimeout(r, 12000));
+      // hold the track for 3 minutes before next one
+      await new Promise(r => setTimeout(r, 180000));
 
     } catch (err) {
       send('error', { message: err.message });
