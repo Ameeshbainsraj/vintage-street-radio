@@ -5,125 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vintage Street Radio — ビシンジストリートラジオ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@300;400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <canvas id="rain"></canvas>
+  <div class="noise"></div>
 
-  <div class="city-bg">
-    <div class="city-glow"></div>
-    <div class="buildings">
-      <div class="building b1"></div><div class="building b2"></div>
-      <div class="building b3"></div><div class="building b4"></div>
-      <div class="building b5"></div><div class="building b6"></div>
-      <div class="building b7"></div><div class="building b8"></div>
+  <nav>
+    <div class="nav-logo">
+      <div class="nav-jp">ビシンジストリートラジオ</div>
+      <div class="nav-en">VSR</div>
     </div>
-    <div class="street-reflection"></div>
-  </div>
-
-  <div class="scan-lines"></div>
-  <div class="vignette"></div>
-
-  <!-- Audio player using direct stream — way more reliable than YouTube iframe -->
-  <audio id="audioStream" preload="none" crossorigin="anonymous"></audio>
-
-  <header>
-    <div class="logo-block">
-      <div class="logo-jp">ビシンジストリートラジオ</div>
-      <h1 class="logo-en">VINTAGE STREET RADIO</h1>
+    <div class="nav-links">
+      <a href="#now-playing">Now Playing</a>
+      <a href="#history">Recent Spins</a>
+      <a href="https://www.youtube.com/@VSR2003" target="_blank" class="nav-yt">▶ YouTube</a>
     </div>
-    <div class="header-right">
-      <div class="live-pill" id="livePill">
-        <span class="live-dot"></span> LIVE
-      </div>
-      <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">▶ PLAY</button>
-      <div class="vol-wrap">
-        <span class="vol-label">VOL</span>
-        <input type="range" id="volSlider" min="0" max="100" value="70" oninput="setVolume(this.value)" />
-      </div>
+    <div class="nav-right">
+      <div class="live-badge"><span class="live-dot"></span>LIVE</div>
       <div class="uptime" id="uptime">00:00:00</div>
     </div>
-  </header>
+  </nav>
 
-  <main>
-    <div class="left-col">
-      <div class="vinyl-wrap">
-        <div class="vinyl" id="vinyl">
-          <div class="vinyl-center"></div>
-          <div class="vinyl-label">VSR</div>
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">Late Night City Radio</div>
+      <h1 class="hero-title">Tune In To<br/>The Night.</h1>
+      <p class="hero-sub">AI-powered lofi radio broadcasting 24/7. Chill beats, retro streets, and looping anime vibes — drop in, tune out.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" id="audioBtn" onclick="toggleAudio()">▶ &nbsp;Play Radio</button>
+        <a href="https://www.youtube.com/@VSR2003" target="_blank" class="btn-secondary">YouTube →</a>
+      </div>
+      <div class="vol-row">
+        <span class="vol-lbl">VOL</span>
+        <input type="range" id="volSlider" min="0" max="100" value="70" oninput="setVolume(this.value)" />
+        <span class="vol-val" id="volVal">70</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="vinyl-card">
+        <div class="vinyl-wrap-inner">
+          <div class="vinyl" id="vinyl">
+            <div class="vg vg1"></div><div class="vg vg2"></div><div class="vg vg3"></div>
+            <div class="vinyl-center"><span>VSR</span></div>
+          </div>
+          <div class="vinyl-arm" id="arm"></div>
         </div>
-        <div class="vinyl-arm" id="arm"></div>
+        <div class="vinyl-info">
+          <div class="vi-label">NOW SPINNING</div>
+          <div class="vi-track" id="vcTrack">—</div>
+          <div class="vi-artist" id="vcArtist">—</div>
+        </div>
       </div>
+    </div>
+  </section>
 
-      <div class="scene-card" id="sceneCard">
-        <div class="scene-label">// scene</div>
-        <div class="scene-text" id="sceneText">Waiting for signal...</div>
+  <section class="section" id="now-playing">
+    <div class="section-head">
+      <span class="section-tag">// on air</span>
+      <h2 class="section-title">Now Playing</h2>
+    </div>
+    <div class="np-grid">
+      <div class="card card-track">
+        <div class="card-vibe" id="vibeTag">INITIALISING</div>
+        <div class="track-name" id="trackName">—</div>
+        <div class="artist-name" id="artistName">—</div>
+        <div class="tags-row" id="tagsRow"></div>
+        <div class="waveform" id="waveform">
+          <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+          <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+          <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+          <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+          <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+          <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
+          <div class="w-bar"></div><div class="w-bar"></div>
+        </div>
       </div>
-
-      <div class="stats-row">
-        <div class="stat">
+      <div class="stats-col">
+        <div class="card card-stat">
+          <div class="stat-sym">♩</div>
           <div class="stat-val" id="bpmVal">—</div>
           <div class="stat-key">BPM</div>
         </div>
-        <div class="stat">
+        <div class="card card-stat">
+          <div class="stat-sym">#</div>
           <div class="stat-val" id="trackNumVal">0</div>
           <div class="stat-key">TRACK</div>
         </div>
-        <div class="stat">
+        <div class="card card-stat">
+          <div class="stat-sym">◷</div>
           <div class="stat-val" id="durVal">—</div>
-          <div class="stat-key">LEN</div>
+          <div class="stat-key">LENGTH</div>
+        </div>
+        <div class="card card-scene">
+          <div class="cs-label">// scene</div>
+          <div class="scene-text" id="sceneText">Waiting for signal...</div>
         </div>
       </div>
     </div>
+  </section>
 
-    <div class="right-col">
-      <div class="now-playing-label">NOW SPINNING</div>
-      <div class="track-name" id="trackName">—</div>
-      <div class="artist-name" id="artistName">—</div>
-
-      <div class="tags-row" id="tagsRow"></div>
-
-      <div class="waveform" id="waveform">
-        <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
-        <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
-        <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
-        <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
-        <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
-        <div class="w-bar"></div><div class="w-bar"></div><div class="w-bar"></div>
-        <div class="w-bar"></div><div class="w-bar"></div>
-      </div>
-
-      <div class="dj-booth">
-        <div class="dj-header">
-          <span class="dj-tag">DJ VSR</span>
-          <span class="dj-freq">88.3 FM</span>
-        </div>
-        <div class="dj-text" id="djText">
-          <span class="dj-cursor">Tuning in to the frequency...</span>
-        </div>
-      </div>
-
-      <div class="vibe-ticker" id="vibeTicker">
-        <span class="ticker-label">VIBE ///</span>
-        <span class="ticker-val" id="vibeVal">initialising</span>
+  <section class="section">
+    <div class="section-head">
+      <span class="section-tag">// dj booth</span>
+      <h2 class="section-title">88.3 FM — DJ VSR</h2>
+    </div>
+    <div class="dj-card">
+      <div class="dj-avatar">DJ</div>
+      <div class="dj-body">
+        <div class="dj-name">DJ VSR <span class="dj-freq">88.3 FM</span></div>
+        <div class="dj-text" id="djText"><span class="dj-cursor">Tuning in to the frequency...</span></div>
       </div>
     </div>
-  </main>
+  </section>
 
-  <div class="history-panel">
-    <div class="history-head">RECENT SPINS</div>
-    <div class="history-list" id="historyList">
-      <div class="history-empty">No tracks yet — go live to start broadcasting.</div>
+  <section class="section" id="history">
+    <div class="section-head">
+      <span class="section-tag">// archive</span>
+      <h2 class="section-title">Recent Spins</h2>
     </div>
-  </div>
+    <div class="spins-grid" id="historyList">
+      <div class="spin-empty">No tracks yet — hit play to start broadcasting.</div>
+    </div>
+  </section>
 
   <footer>
-    <span>© VINTAGE STREET RADIO</span>
-    <span class="footer-jp">深夜放送 — Late Night Broadcast</span>
-    <span id="footerTrack">TRACK #0</span>
+    <div class="footer-logo-block">
+      <div class="footer-logo">VINTAGE STREET RADIO</div>
+      <div class="footer-jp">ビシンジストリートラジオ — 深夜放送</div>
+    </div>
+    <a href="https://www.youtube.com/@VSR2003" target="_blank" class="footer-yt">▶ Watch on YouTube</a>
+    <div class="footer-track" id="footerTrack">TRACK #0</div>
   </footer>
 
+  <audio id="audioStream" preload="none" crossorigin="anonymous"></audio>
   <script src="/js/rain.js"></script>
   <script src="/js/app.js"></script>
 </body>
