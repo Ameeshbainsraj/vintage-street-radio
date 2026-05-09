@@ -1,5 +1,52 @@
 const $ = id => document.getElementById(id);
 
+// ── YouTube Player ──
+let ytPlayer = null;
+let audioReady = false;
+let audioPlaying = false;
+
+window.onYouTubeIframeAPIReady = function() {
+  ytPlayer = new YT.Player('yt-player', {
+    height: '1', width: '1',
+    videoId: 'WdJg27tKQLY',
+    playerVars: {
+      listType: 'playlist',
+      list: 'RDWdJg27tKQLY',
+      autoplay: 0,
+      loop: 1,
+      controls: 0,
+      fs: 0,
+      rel: 0
+    },
+    events: {
+      onReady: () => { audioReady = true; ytPlayer.setVolume(70); },
+      onStateChange: e => {
+        if (e.data === YT.PlayerState.ENDED) ytPlayer.playVideo();
+      }
+    }
+  });
+};
+
+function toggleAudio() {
+  if (!audioReady) return;
+  const btn = $('audioBtn');
+  if (!audioPlaying) {
+    ytPlayer.playVideo();
+    audioPlaying = true;
+    btn.textContent = '⏸ PAUSE';
+    btn.classList.add('playing');
+  } else {
+    ytPlayer.pauseVideo();
+    audioPlaying = false;
+    btn.textContent = '▶ PLAY';
+    btn.classList.remove('playing');
+  }
+}
+
+function setVolume(val) {
+  if (ytPlayer && audioReady) ytPlayer.setVolume(parseInt(val));
+}
+
 let trackHistory = [];
 let startTime = Date.now();
 let es = null;
